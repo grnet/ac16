@@ -17,10 +17,10 @@ def mkGk(k):
 
 def mkChi(q):
     chi = q.random()
-    alpha = q.ramdom()
-    rho = 1 + (q - 1).ramdom()
-    beta = 1 + (q - 1).ramdom()
-    gamma = 1 + (q - 2).ramdom()
+    alpha = q.random()
+    rho = 1 + (q - 1).random()
+    beta = 1 + (q - 1).random()
+    gamma = 1 + (q - 2).random()
     return Chi_T(chi, alpha, rho, beta, gamma)
 
 
