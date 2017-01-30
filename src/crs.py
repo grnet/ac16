@@ -6,7 +6,7 @@ gk_T = namedtuple("gk_T", ["q", "g1", "g2", "gt", "e"])
 Chi_T = namedtuple("Chi_T", ["chi", "alpha", "rho", "beta", "gamma"])
 
 
-def mkGk(k):
+def mk_gk(k):
     G = bp.BpGroup()
     q = G.order()
     g1 = G.gen1()
@@ -15,7 +15,7 @@ def mkGk(k):
     return gk_T(q, g1, g2, gt, G.pair)
 
 
-def mkChi(q):
+def mk_Chi(q):
     chi = q.random()
     alpha = q.random()
     rho = 1 + (q - 1).random()
@@ -24,7 +24,7 @@ def mkChi(q):
     return Chi_T(chi, alpha, rho, beta, gamma)
 
 
-def mkCrs(n, gk, Chi):
+def mk_crs(n, gk, Chi):
     # line 1
     gk = gk
     [gk.g1 * poly(i, Chi.chi) for i in range(1, n + 1)]

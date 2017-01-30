@@ -9,7 +9,7 @@ def lagrangian(i, n, chi, q):
     Arguments:
     i -- polynomial index in range 1, 2, ..., n + 1
     chi -- input value of the polynomial
-    q -- the order of the field
+    q -- the order of the group
     """
     numerator = Bn(1)
     denominator = Bn(1)
@@ -29,7 +29,7 @@ def compute_denominators(k, q):
     Uses distinct points 1, ...,k
     Arguments:
     k -- number of basis polynomials
-    q -- the order of the field  
+    q -- the order of the group
     """
     denominators = []
     temp = Bn(1)
@@ -76,10 +76,11 @@ def compute_denominators_slow(k, q):
 def generate_pi(chi, n, q):
     """Computes vector of elements P_i(chi) for i = 1, ..., n.
 
-    
     Uses Lagrange basis polynomials with distinct points 1, ..., n + 1
     Arguments:
     chi -- point of evaluation
+    n -- the number of elements
+    q -- the order of the group
     """
     
     if chi <= n + 1:
@@ -106,4 +107,3 @@ def generate_pi(chi, n, q):
         pis.append(two.mod_mul(l_i, q).mod_add(ln_1, q))
         
     return pis
-
