@@ -58,7 +58,7 @@ def compute_denominators_slow(k, q):
     Uses distinct points 1, ...,k
     Arguments:
     k -- number of basis polynomials
-    q -- the order of the field
+    q -- the order of the group
     """
     denominators = []
 
