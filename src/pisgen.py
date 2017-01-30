@@ -39,16 +39,39 @@ def compute_denominators(k, q):
                 elem = i - j;
                 temp = temp.mod_mul(elem, q)
         elif i == k:
-            elem = -k;              
+            elem = 1 - k;
             temp = temp.mod_mul(elem, q)
         else:            
             inverse = Bn(i - 1 - k)
             inverse = inverse.mod_inverse(q)
             elem = i - 1
-	    temp = temp.mod_mul(elem, q)
+            temp = temp.mod_mul(elem, q)
             temp = temp.mod_mul(inverse, q)
         denominators.append(temp)
     return denominators
+
+
+def compute_denominators_slow(k, q):
+    """Computes denominators for Lagrange basis polynomials.
+    This function can be used to test compute_denominators(k, q).
+
+    Uses distinct points 1, ...,k
+    Arguments:
+    k -- number of basis polynomials
+    q -- the order of the field
+    """
+    denominators = []
+
+    for i in range(1, k+1):
+        denominator = Bn(1)
+        for j in range(1, k+1):
+            if i == j:
+                continue
+            elem = i - j
+            denominator = denominator.mod_mul(elem, q)
+        denominators.append(denominator)
+    return denominators
+
 
 def generate_pi(chi, n, q):
     """Computes vector of elements P_i(chi) for i = 1, ..., n.
