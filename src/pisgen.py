@@ -73,10 +73,15 @@ def compute_denominators_slow(k, q):
     return denominators
 
 
-def generate_pi(chi, n, q):
-    """Computes vector of elements P_i(chi) for i = 1, ..., n.
+def generate_pis(chi, n, q):
+    """Computes vector of elements P_i(chi) for i = 0, ..., n.
 
-    Uses Lagrange basis polynomials with distinct points 1, ..., n + 1
+    P_0 is special, defined as ln_plus1(chi) - 1, where ln_plus1 is the
+    (n+1)th Lagrange basis polynomial.
+    The rest P_i are defined as 2*ln_i(ch) + ln_plus1(chi), where ln_i is the
+    ith Lagrange basis polynomial.
+    It returns a list with the values of the n+1 polynomials P_i(chi).
+    Uses Lagrange basis polynomials with distinct points 1, ..., n + 1.
     Arguments:
     chi -- point of evaluation
     n -- the number of elements
@@ -95,20 +100,30 @@ def generate_pi(chi, n, q):
 
     # denoms[0] = 1 / (w_1 - w_2) (w_1 - w_3) ... (w_1 - w_{n + 1})
     # denoms[1] = 1 / (w_2 - w_1) (w_2 - w_3) ... (w_2 - w_{n + 1})
-    # denoms[n+1] = 1 / (w_{n+1}- w_1) (w_{n+1} - w_2) ... (w_{n+1} - w_n)
+    # denoms[n] = 1 / (w_{n+1}- w_1) (w_{n+1} - w_2) ... (w_{n+1} - w_n)
     denoms = compute_denominators(n + 1, q)
-            
+    
     missing_factor = Bn(chi - (n + 1))
             
-    ln_1 = prod.mod_mul(missing_factor.mod_inverse(q), q)
-    ln_1 = ln_1.mod_mul(denoms[n].mod_inverse(q), q)
+    ln_plus1 = prod.mod_mul(missing_factor.mod_inverse(q), q)
+    ln_plus1 = ln_plus1.mod_mul(denoms[n].mod_inverse(q), q)
 
+    # P_0 is special
+    pis.append(ln_plus1.mod_sub(Bn(1), q))
+               
     two = Bn(2)
     for i in range(1, n + 1):
         missing_factor = Bn(chi - i)
         l_i = prod.mod_mul(missing_factor.mod_inverse(q), q)
         l_i = l_i.mod_mul(denoms[i - 1].mod_inverse(q), q)
-        pis.append(two.mod_mul(l_i, q).mod_add(ln_1, q))
+        pis.append(two.mod_mul(l_i, q).mod_add(ln_plus1, q))
         
     return pis
 
+def test_generate_pis():
+    print(generate_pis(6, 2, 7))
+    assert(generate_pis(6, 2, 7) == [1, 1])
+
+if __name__ == '__main__':
+    print(generate_pis(6, 2, 7))
+    # test_generate_pis()
