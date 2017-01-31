@@ -19,8 +19,8 @@ def step1a(n, gk, sigma, g1_polys, g1rho, g2_polys, g2rho):
     return randoms, A1, A2
 
 
-def step1b(randoms):
-    rand_n = - sum(randoms)
+def step1b(gk, randoms):
+    rand_n = - sum(randoms) % gk.q
     randoms.append(rand_n)
     return randoms
 
@@ -90,7 +90,7 @@ def step4b(gk, ciphertexts, rs, randoms, pk1, pk2):
 def prover(n, crs, ciphertexts, sigma, s_randoms):
     randoms, A1, A2 = step1a(
         n, crs.gk, sigma, crs.g1_polys, crs.g1rho, crs.g2_polys, crs.g2rho)
-    randoms = step1b(randoms)
+    randoms = step1b(crs.gk, randoms)
     A1, A2 = step1c(crs.gk, A1, A2, crs.g1_sums, crs.g2_sums)
     pi_1sp = step2a(
         sigma, A1, randoms, crs.g1_poly_zero, crs.g1rho, crs.g1_poly_squares)
