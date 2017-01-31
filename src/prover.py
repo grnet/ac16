@@ -80,7 +80,7 @@ def step4b(gk, ciphertexts, rs, randoms, pk1, pk2):
     inf1, inf2 = get_infs(gk)
     pi_c2_1 = inf1
     pi_c2_2 = inf2
-    for i, (ciphertext, ri) in range(zip(ciphertexts, randoms)):
+    for ciphertext, ri in zip(ciphertexts, randoms):
         v1, v2 = ciphertext
         pi_c2_1 += ri * v1 + enc(pk1, rs[0], rs[1], 0)
         pi_c2_2 += ri * v2 + enc(pk2, rs[0], rs[1], 0)
