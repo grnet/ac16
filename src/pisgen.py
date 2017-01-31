@@ -121,9 +121,7 @@ def generate_pis(chi, n, q):
     return pis
 
 def test_generate_pis():
-    print(generate_pis(6, 2, 7))
-    assert(generate_pis(6, 2, 7) == [1, 1])
+    assert(generate_pis(6, 2, 7) == [2, 1, 1])
 
 if __name__ == '__main__':
-    print(generate_pis(6, 2, 7))
-    # test_generate_pis()
+    test_generate_pis()
