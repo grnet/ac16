@@ -42,13 +42,13 @@ def step1c(gk, A1, A2, g1_sums, g2_sums):
     return A1, A2
 
 
-def step2a(sigma, A1, randoms, g1_poly0, g1rho, g1_poly_sq):
+def step2a(sigma, A1, randoms, g1_poly_zero, g1rho, g1_poly_squares):
     pi_1sp = []
     inverted_sigma = inverse_perm(sigma)
     for i, (ri, Ai1) in enumerate(zip(randoms, A1)):
         inv_i = inverted_sigma(i)
-        complex_i = g1_poly_sq[inv_i]
-        v = (2 * ri) * (Ai1 + g1_poly0) - (ri * ri) * g1rho + complex_i
+        g1_poly_sq = g1_poly_squares[inv_i]
+        v = (2 * ri) * (Ai1 + g1_poly_zero) - (ri * ri) * g1rho + gi_poly_sq
         pi_1sp.append(v)
     return pi_1sp
 
@@ -93,7 +93,7 @@ def prover(n, crs, ciphertexts, sigma, s_randoms):
     randoms = step1b(randoms)
     A1, A2 = step1c(crs.gk, A1, A2, crs.g1_sums, crs.g2_sums)
     pi_1sp = step2a(
-        sigma, A1, randoms, crs.g1_poly0, crs.g1rho, crs.g1_poly_sq)
+        sigma, A1, randoms, crs.g1_poly_zero, crs.g1rho, crs.g1_poly_squares)
     v_prime = step3a(sigma, ciphertexts, s_randoms, crs.pk1, crs.pk2)
     rs, (pi_c1_1, pi_c1_2) = step4a(crs.gk, s_randoms, crs.g2_polys, crs.g2rho)
     pi_c2_1, pi_c2_2 = step4b(

@@ -4,6 +4,10 @@ from collections import namedtuple
 
 gk_T = namedtuple("gk_T", ["q", "g1", "g2", "gt", "e"])
 Chi_T = namedtuple("Chi_T", ["chi", "alpha", "rho", "beta", "gamma"])
+CRS_T = namedtuple(
+    "CRS_T", ["gk", "g1_polys", "g1rho", "g1alpha", "g1_poly_zero",
+              "g1_poly_squares", "pk1", "g2_polys", "g2rho", "g2alpha",
+              "pk2", "g2beta", "pairing", "g1_sum", "g2_sum"])
 
 
 def mk_gk(k):
@@ -24,33 +28,41 @@ def mk_Chi(q):
     return Chi_T(chi, alpha, rho, beta, gamma)
 
 
-def mk_crs(n, gk, Chi):
+def mk_crs(n, gk, Chi, poly, poly_zero):
     # line 1
     gk = gk
-    [gk.g1 * poly(i, Chi.chi) for i in range(1, n + 1)]
-    gk.g1 * Chi.rho
-    gk.g1 * (gk.alpha + poly(0, Chi.chi))
-    gk.g1 * poly(0, Chi.chi)
+    g1_polys = [poly(i, Chi.chi) * gk.g1 for i in range(n)]
+    g1rho = Chi.rho * gk.g1
+    g1alpha = (gk.alpha + poly_zero(Chi.chi)) * gk.g1
+    g1_poly_zero = poly_zero(Chi.chi) * gk.g1
     inv_rho = Chi.rho.mod_inverse(gk.q)
-    [gk.g1 * ((poly(i, Chi.chi) + poly(0, Chi.chi)) ** 2 - 1) * inv_rho
-     for i in range(1, n + 1)]
+    g1_poly_squares = []
+    for i in range(n):
+        nom = (poly(i, Chi.chi) + poly_zero(Chi.chi)) ** 2 - 1
+        g1_poly_squares.append((nom * inv_rho) * gk.g1)
 
     # line 2
     inv_beta = Chi.beta.mod_inverse(gk.q)
-    g1hat = gk.g1 * (Chi.rho * inv_beta)
-    h1 = g1hat * gk.gamma
+    g1hat = (Chi.rho * inv_beta) * gk.g1
+    h1 = gk.gamma * g1hat
     pk1 = (g1hat, h1)
 
     # line 3
-    [gk.g2 * poly(i, Chi.chi) for i in range(1, n + 1)]
-    gk.g2 * Chi.rho
-    gk.g2 * (-Chi.alpha + poly(0, Chi.chi))
-    h2 = gk.g2 * Chi.gamma
+    g2_polys = [poly(i, Chi.chi) * gk.g2 for i in range(n)]
+    g2rho = Chi.rho * gk.g2
+    g2alpha = (-Chi.alpha + poly_zero(Chi.chi)) * gk.g2
+    h2 = Chi.gamma * gk.g2
     pk2 = (gk.g2, h2)
-    gk.g2 * Chi.beta
+    g2beta = Chi.beta * gk.g2
 
     # line 4
-    gk.e(gk.g1, gk.g2) * (1 - (gk.alpha ** 2))
-    sigma = sum([poly(i, Chi.chi) for i in range(1, n + 1)])
-    gk.g1 * sigma
-    gk.g2 * sigma
+    pairing = (1 - gk.alpha ** 2) * gk.e(gk.g1, gk.g2)
+    poly_sum = sum([poly(i, Chi.chi) for i in range(n)])
+    g1_sum = poly_sum * gk.g1
+    g2_sum = poly_sum * gk.g2
+
+    CRS = CRS_T(gk, g1_polys, g1rho, g1alpha, g1_poly_zero,
+                g1_poly_squares, pk1, g2_polys, g2rho, g2alpha,
+                pk2, g2beta, pairing, g1_sum, g2_sum)
+    trapdoor = (Chi.chi, Chi.rho)
+    return CRS, trapdoor
