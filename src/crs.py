@@ -8,7 +8,7 @@ Chi_T = namedtuple("Chi_T", ["chi", "alpha", "rho", "beta", "gamma"])
 CRS_T = namedtuple(
     "CRS_T", ["gk", "g1_polys", "g1rho", "g1alpha", "g1_poly_zero",
               "g1_poly_squares", "pk1", "g2_polys", "g2rho", "g2alpha",
-              "pk2", "g2beta", "pairing", "g1_sum", "g2_sum"])
+              "pk2", "g2beta", "pair_alpha", "g1_sum", "g2_sum"])
 
 
 def mk_gk(k):
@@ -61,13 +61,13 @@ def mk_crs(n, gk, Chi):
     g2beta = Chi.beta * gk.g2
 
     # line 4
-    pairing = (1 - gk.alpha ** 2) * gk.e(gk.g1, gk.g2)
+    pair_alpha = (1 - gk.alpha ** 2) * gk.e(gk.g1, gk.g2)
     poly_sum = sum([poly for poly in polys])
     g1_sum = poly_sum * gk.g1
     g2_sum = poly_sum * gk.g2
 
     CRS = CRS_T(gk, g1_polys, g1rho, g1alpha, g1_poly_zero,
                 g1_poly_squares, pk1, g2_polys, g2rho, g2alpha,
-                pk2, g2beta, pairing, g1_sum, g2_sum)
+                pk2, g2beta, pair_alpha, g1_sum, g2_sum)
     trapdoor = (Chi.chi, Chi.rho)
     return CRS, trapdoor
