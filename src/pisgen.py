@@ -101,13 +101,13 @@ def generate_pi(chi, n, q):
     missing_factor = Bn(chi - (n + 1))
             
     ln_1 = prod.mod_mul(missing_factor.mod_inverse(q), q)
-    ln_1 = ln_1.mod_mul(denoms[n], q)
+    ln_1 = ln_1.mod_mul(denoms[n].mod_inverse(q), q)
 
     two = Bn(2)
     for i in range(1, n + 1):
         missing_factor = Bn(chi - i)
         l_i = prod.mod_mul(missing_factor.mod_inverse(q), q)
-        l_i = l_i.mod_mul(denoms[i-1], q)
+        l_i = l_i.mod_mul(denoms[i - 1].mod_inverse(q), q)
         pis.append(two.mod_mul(l_i, q).mod_add(ln_1, q))
         
     return pis
