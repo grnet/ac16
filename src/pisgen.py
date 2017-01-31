@@ -89,9 +89,13 @@ def generate_pi(chi, n, q):
     pis = []
             
     prod = Bn(1)
+    # prod = (x - w_1) (x - w_2) ... (x - w_{n+1})
     for j in range(1, n + 2):
         prod = prod.mod_mul(chi - j, q)
-    
+
+    # denoms[0] = 1 / (w_1 - w_2) (w_1 - w_3) ... (w_1 - w_{n + 1})
+    # denoms[1] = 1 / (w_2 - w_1) (w_2 - w_3) ... (w_2 - w_{n + 1})
+    # denoms[n+1] = 1 / (w_{n+1}- w_1) (w_{n+1} - w_2) ... (w_{n+1} - w_n)
     denoms = compute_denominators(n + 1, q)
             
     missing_factor = Bn(chi - (n + 1))
@@ -103,7 +107,8 @@ def generate_pi(chi, n, q):
     for i in range(1, n + 1):
         missing_factor = Bn(chi - i)
         l_i = prod.mod_mul(missing_factor.mod_inverse(q), q)
-        l_i = l_i.mod_mul(denoms[i], q)
+        l_i = l_i.mod_mul(denoms[i-1], q)
         pis.append(two.mod_mul(l_i, q).mod_add(ln_1, q))
         
     return pis
+
