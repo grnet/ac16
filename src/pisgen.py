@@ -21,7 +21,7 @@ def lagrangian(i, n, chi, q):
         elem = i - j
         denominator = denominator.mod_mul(elem, q)
 
-    return numerator * denominator.mod_inverse(q)
+    return numerator.mod_mul(denominator.mod_inverse(q), q)
 
 def compute_denominators(k, q):
     """Computes denominators for Lagrange basis polynomials.
