@@ -120,8 +120,10 @@ def generate_pis(chi, n, q):
         
     return pis
 
-def test_generate_pis():
+def test_generate_pis():    
     assert(generate_pis(Bn(6), 2, Bn(7)) == [2, 1, 1])
+    assert(generate_pis(Bn(8), 3, Bn(17)) == [0, 12, 5, 3])
+    assert(generate_pis(Bn(9), 4, Bn(17)) == [1, 4, 5, 1, 13])
 
 if __name__ == '__main__':
     test_generate_pis()
