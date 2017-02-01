@@ -15,7 +15,7 @@ def secure_shuffle(lst):
 
 def random_permutation(n):
     s = range(n)
-    secure_shuffle(s)
+    #secure_shuffle(s)
     return s
 
 

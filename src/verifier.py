@@ -7,7 +7,8 @@ def step1(gk, A1, A2, g1_sum, g2_sum):
 
 
 def step2(gk, n):
-    p1 = [gk.q.random() for i in range(n)]
+    # p1 = [gk.q.random() for i in range(n)]
+    p1 = [0] * n
     p2 = [gk.q.random() for j in range(3)]
     p3 = [[gk.q.random() for j in range(3)]
           for i in range(n)]
@@ -16,7 +17,7 @@ def step2(gk, n):
 
 
 def get_infT(gk):
-    return GTElem.zero(gk.G)
+    return GTElem.one(gk.G)
 
 
 def step3(gk, e, A1, A2, p1, pi_1sp, g1alpha, g2alpha, g2rho, pair_alpha):
@@ -25,11 +26,20 @@ def step3(gk, e, A1, A2, p1, pi_1sp, g1alpha, g2alpha, g2rho, pair_alpha):
     prodT = infT
     prod1 = inf1
     sum_p = 0
+    assert len(A1) == len(A2) == len(p1) == len(pi_1sp)
     for (Ai1, Ai2, p1i, pi_1spi) in zip(A1, A2, p1, pi_1sp):
         prodT *= e(p1i * (Ai1 + g1alpha), Ai2 + g2alpha)
         prod1 += p1i * pi_1spi
         sum_p = (sum_p + p1i) % gk.q
-    right = e(prod1, g2rho) * (pair_alpha ** sum_p)
+    right1 = e(prod1, g2rho)
+    right2 = pair_alpha ** sum_p
+    right = right1 * right2
+    print 1, right1 == infT
+    print 2, right2 == infT
+    print 2, type(right2)
+    print "INFS"
+    print sum_p
+    print prod1 == inf1
     return prodT == right
 
 

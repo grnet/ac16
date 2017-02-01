@@ -38,10 +38,8 @@ def step1c(gk, A1, A2, g1_sums, g2_sums):
     inf1, inf2 = get_infs(gk)
     prod1 = sum(A1, inf1)
     prod2 = sum(A2, inf2)
-    inv_prod1 = prod1.neg()
-    inv_prod2 = prod2.neg()
-    A1.append(g1_sums + inv_prod1)
-    A2.append(g2_sums + inv_prod2)
+    A1.append(g1_sums - prod1)
+    A2.append(g2_sums - prod2)
     return A1, A2
 
 
