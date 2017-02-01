@@ -16,7 +16,7 @@ def enc(pk, s1, s2, m):
     g, h = pk
     return (s1*h, s2*(g+h), (m + s1 + s2) * g)
 
-def dec(c, g, sk, table):
+def dec(c, params, sk, table):
     _, g, o = params
     c1, c2, c3 = c
     e1 = -(sk).mod_inverse(o)    
@@ -24,19 +24,22 @@ def dec(c, g, sk, table):
     v = (c3 + e2*c2 + e1*c1)
     return table[v]
 
-def make_table(params):
+def make_table(params, n):
     _, g, o = params
     table = {}
-    for i in range(-1000, 1000):
+    for i in range(n):
         table[i * g] = i
     return table
 
-params = params_gen()
-table = make_table(params)
-G, g, o = params
-pk, sk = key_gen(params)
+def test_encdec():
+    params = params_gen()
+    table = make_table(params, 1000)
+    G, g, o = params
+    pk, sk = key_gen(params)
+    s1 = o.random()
+    s2 = o.random()
+    c = enc(pk, s1, s2, 666)
+    assert(dec(c, params, sk, table) == 666)
 
-s1 = o.random()
-s2 = o.random()
-c = enc(pk, s1, s2, 666)
-print(dec(c, g, sk, table))
+if __name__ == '__main__':
+    test_encdec()
