@@ -47,8 +47,8 @@ def step2a(sigma, A1, randoms, g1_poly_zero, g1rho, g1_poly_squares):
     inverted_sigma = inverse_perm(sigma)
     for i, (ri, Ai1) in enumerate(zip(randoms, A1)):
         inv_i = inverted_sigma(i)
-        g1_poly_sq = g1_poly_squares[inv_i]
-        v = (2 * ri) * (Ai1 + g1_poly_zero) - (ri * ri) * g1rho + gi_poly_sq
+        g1i_poly_sq = g1_poly_squares[inv_i]
+        v = (2 * ri) * (Ai1 + g1_poly_zero) - (ri * ri) * g1rho + g1i_poly_sq
         pi_1sp.append(v)
     return pi_1sp
 
@@ -69,7 +69,7 @@ def step4a(gk, s_randoms, g2_polys, g2rho):
     (rs1, rs2) = rs
     pi_c1_1 = rs1 * g2rho
     pi_c1_2 = rs2 * g2rho
-    for i, si, g2_polyi in enumerate(zip(s_randoms, g2_polys)):
+    for si, g2_polyi in zip(s_randoms, g2_polys):
         si1, si2 = si
         pi_c1_1 += si1 * g2_polyi
         pi_c1_2 += si2 * g2_polyi
@@ -77,17 +77,16 @@ def step4a(gk, s_randoms, g2_polys, g2rho):
 
 
 def step4b(gk, ciphertexts, rs, randoms, pk1, pk2):
-    inf1, inf2 = get_infs(gk)
-    pi_c2_1 = inf1
-    pi_c2_2 = inf2
+    pi_c2_1 = enc(pk1, rs[0], rs[1], 0)
+    pi_c2_2 = enc(pk2, rs[0], rs[1], 0)
     for ciphertext, ri in zip(ciphertexts, randoms):
         v1, v2 = ciphertext
-        pi_c2_1 += ri * v1 + enc(pk1, rs[0], rs[1], 0)
-        pi_c2_2 += ri * v2 + enc(pk2, rs[0], rs[1], 0)
+        pi_c2_1 += ri * v1
+        pi_c2_2 += ri * v2
     return pi_c2_1, pi_c2_2
 
 
-def prover(n, crs, ciphertexts, sigma, s_randoms):
+def prove(n, crs, ciphertexts, sigma, s_randoms):
     randoms, A1, A2 = step1a(
         n, crs.gk, sigma, crs.g1_polys, crs.g1rho, crs.g2_polys, crs.g2rho)
     randoms = step1b(crs.gk, randoms)
