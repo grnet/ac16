@@ -7,8 +7,7 @@ def step1(gk, A1, A2, g1_sum, g2_sum):
 
 
 def step2(gk, n):
-    # p1 = [gk.q.random() for i in range(n)]
-    p1 = [0] * n
+    p1 = [gk.q.random() for i in range(n)]
     p2 = [gk.q.random() for j in range(3)]
     p3 = [[gk.q.random() for j in range(3)]
           for i in range(n)]
