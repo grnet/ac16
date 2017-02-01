@@ -30,7 +30,7 @@ def mk_Chi(q):
 
 
 def mk_crs(n, gk, Chi):
-    polys_all = generate_pis(Chi.chi, n + 1, gk.q)
+    polys_all = generate_pis(Chi.chi, n, gk.q)
     poly_zero = polys_all[0]
     polys = polys_all[1:]
 
