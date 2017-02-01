@@ -59,3 +59,8 @@ def encrypt_messages(order, pk1, pk2, messages):
 
 def decrypt_messages(order, secret, tables, ciphertexts):
     return [encdec.decrypt(order, cs, secret, tables) for cs in ciphertexts]
+
+
+if __name__ == '__main__':
+    messages = range(10)
+    demo(len(messages), messages)
