@@ -2,8 +2,8 @@ import prover
 from bplib.bp import GTElem
 
 
-def step1(gk, A1, A2, g1_sums, g2_sums):
-    return prover.step1c(gk, A1, A2, g1_sums, g2_sums)
+def step1(gk, A1, A2, g1_sum, g2_sum):
+    return prover.step1c(gk, A1, A2, g1_sum, g2_sum)
 
 
 def step2(gk, n):
@@ -26,10 +26,10 @@ def step3(gk, e, A1, A2, p1, pi_1sp, g1alpha, g2alpha, g2rho, pair_alpha):
     prod1 = inf1
     sum_p = 0
     for (Ai1, Ai2, p1i, pi_1spi) in zip(A1, A2, p1, pi_1sp):
-        prodT += e(p1i * (Ai1 + g1alpha), Ai2 + g2alpha)
+        prodT *= e(p1i * (Ai1 + g1alpha), Ai2 + g2alpha)
         prod1 += p1i * pi_1spi
-        sum_p += p1i
-    right = e(prod1, g2rho) + sum_p * pair_alpha
+        sum_p = (sum_p + p1i) % gk.q
+    right = e(prod1, g2rho) * (pair_alpha ** sum_p)
     return prodT == right
 
 
@@ -53,7 +53,7 @@ def step4(gk, e, p2, p3, pi_c2_1, pi_c2_2, v_primes, g1rho, g2beta):
         return outer_prod
 
     left = e(g1rho, pi_c_prod(inf2, pi_c2_2) + nested_prods(inf2, 1))
-    right = e(pi_c_prod(pi_c2_1) + nested_prods(inf1, 0), g2beta)
+    right = e(pi_c_prod(inf1, pi_c2_1) + nested_prods(inf1, 0), g2beta)
     return left == right
 
 
@@ -70,7 +70,7 @@ def step5(gk, pk1, g2rho, pi_c1_1, pi_c1_2, pi_c2_1, e, p4):
 
 
 def step6(gk, e, vs, v_primes, A2, p4, R, g2_polys):
-    def do_inner(vi1):
+    def do_inner(vi):
         vi1 = vi[0]
         inf1, _ = prover.get_infs(gk)
         inner_prod = inf1
@@ -93,7 +93,7 @@ def step6(gk, e, vs, v_primes, A2, p4, R, g2_polys):
 def verify(n, crs, vs, v_primes, A1, A2,
            pi_1sp, pi_c1_1, pi_c1_2, pi_c2_1, pi_c2_2):
     gk = crs.gk
-    A1, A2 = step1(gk, A1, A2, crs.g1_sums, crs.g2_sums)
+    A1, A2 = step1(gk, A1, A2, crs.g1_sum, crs.g2_sum)
     p1, p2, p3, p4 = step2(gk, n)
     perm_ok = step3(gk, gk.e, A1, A2, p1, pi_1sp,
                     crs.g1alpha, crs.g2alpha, crs.g2rho, crs.pair_alpha)

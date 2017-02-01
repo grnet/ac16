@@ -3,7 +3,7 @@ from collections import namedtuple
 from pisgen import generate_pis
 
 
-gk_T = namedtuple("gk_T", ["q", "g1", "g2", "gt", "e"])
+gk_T = namedtuple("gk_T", ["G", "q", "g1", "g2", "gt", "e"])
 Chi_T = namedtuple("Chi_T", ["chi", "alpha", "rho", "beta", "gamma"])
 CRS_T = namedtuple(
     "CRS_T", ["gk", "g1_polys", "g1rho", "g1alpha", "g1_poly_zero",
@@ -17,7 +17,7 @@ def mk_gk():
     g1 = G.gen1()
     g2 = G.gen2()
     gt = G.pair(g1, g2)
-    return gk_T(q, g1, g2, gt, G.pair)
+    return gk_T(G, q, g1, g2, gt, G.pair)
 
 
 def mk_Chi(q):
@@ -71,10 +71,3 @@ def mk_crs(n, gk, Chi):
                 pk2, g2beta, pair_alpha, g1_sum, g2_sum)
     trapdoor = (Chi.chi, Chi.rho)
     return CRS, trapdoor
-
-
-def test():
-    gk = mk_gk()
-    Chi = mk_Chi(gk.q)
-    CRS, td = mk_crs(100, gk, Chi)
-    return gk, Chi, CRS

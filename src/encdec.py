@@ -15,18 +15,7 @@ def make_tables(pk1, pk2, n):
     return table1, table2
 
 
-def decrypt(gk, ctext, secret, tables):
-    m1 = ilin2.dec(ctext[0], gk.q, secret, tables[0])
-    m2 = ilin2.dec(ctext[1], gk.q, secret, tables[1])
-    return m1, m2
-
-
-def test(gk, Chi, CRS):
-    pk1 = CRS.pk1
-    pk2 = CRS.pk2
-    tables = make_tables(pk1, pk2, 100)
-    secret = Chi.gamma
-    m = 17
-    ctexts = encrypt(gk.q, pk1, pk2, m)
-    m1, m2 = decrypt(gk, ctexts, secret, tables)
+def decrypt(q, ctext, secret, tables):
+    m1 = ilin2.dec(ctext[0], q, secret, tables[0])
+    m2 = ilin2.dec(ctext[1], q, secret, tables[1])
     return m1, m2

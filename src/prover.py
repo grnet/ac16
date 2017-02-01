@@ -63,8 +63,8 @@ def step3a(sigma, ciphertexts, s_randoms, pk1, pk2):
     for i, s_random in enumerate(s_randoms):
         perm_i = sigma[i]
         (v1, v2) = ciphertexts[perm_i]
-        v1s_prime.append(v1 + enc(pk1, s_random[0], s_random[1], 0))
-        v2s_prime.append(v2 + enc(pk2, s_random[0], s_random[1], 0))
+        v1s_prime.append(tuple_add(v1, enc(pk1, s_random[0], s_random[1], 0)))
+        v2s_prime.append(tuple_add(v2, enc(pk2, s_random[0], s_random[1], 0)))
     return zip(v1s_prime, v2s_prime)
 
 
@@ -80,13 +80,22 @@ def step4a(gk, s_randoms, g2_polys, g2rho):
     return rs, (pi_c1_1, pi_c1_2)
 
 
+def tuple_map(func, tpl):
+    return tuple(map(func, tpl))
+
+
+def tuple_add(tpl1, tpl2):
+    zipped = zip(tpl1, tpl2)
+    return tuple(z[0] + z[1] for z in zipped)
+
+
 def step4b(gk, ciphertexts, rs, randoms, pk1, pk2):
     pi_c2_1 = enc(pk1, rs[0], rs[1], 0)
     pi_c2_2 = enc(pk2, rs[0], rs[1], 0)
     for ciphertext, ri in zip(ciphertexts, randoms):
         v1, v2 = ciphertext
-        pi_c2_1 += ri * v1
-        pi_c2_2 += ri * v2
+        pi_c2_1 = tuple_add(pi_c2_1, tuple_map(lambda x: ri * x, v1))
+        pi_c2_2 = tuple_add(pi_c2_2, tuple_map(lambda x: ri * x, v2))
     return pi_c2_1, pi_c2_2
 
 
@@ -94,7 +103,7 @@ def prove(n, crs, ciphertexts, sigma, s_randoms):
     randoms, A1, A2 = step1a(
         n, crs.gk, sigma, crs.g1_polys, crs.g1rho, crs.g2_polys, crs.g2rho)
     randoms = step1b(crs.gk, randoms)
-    A1, A2 = step1c(crs.gk, A1, A2, crs.g1_sums, crs.g2_sums)
+    A1, A2 = step1c(crs.gk, A1, A2, crs.g1_sum, crs.g2_sum)
     pi_1sp = step2a(
         sigma, A1, randoms, crs.g1_poly_zero, crs.g1rho, crs.g1_poly_squares)
     v_prime = step3a(sigma, ciphertexts, s_randoms, crs.pk1, crs.pk2)
