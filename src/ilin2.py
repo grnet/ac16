@@ -25,7 +25,7 @@ def dec(c, params, sk, table):
     return table[v]
 
 def make_table(params, n):
-    _, g, o = params
+    _, g, _ = params
     table = {}
     for i in range(n):
         table[i * g] = i
@@ -40,6 +40,13 @@ def test_encdec():
     s2 = o.random()
     c = enc(pk, s1, s2, 666)
     assert(dec(c, params, sk, table) == 666)
-
+    c = enc(pk, s1, s2, 7)
+    assert(dec(c, params, sk, table) == 7)
+    import random
+    ps = random.sample(range(1000), 100)
+    for i in range(100):
+        c = enc(pk, s1, s2, ps[i])
+        assert(dec(c, params, sk, table) == ps[i])
+    
 if __name__ == '__main__':
     test_encdec()
