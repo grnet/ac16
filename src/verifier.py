@@ -16,7 +16,7 @@ def step2(gk, n):
 
 
 def get_infT(gk):
-    return GTElem.zero(gk.G)
+    return GTElem.one(gk.G)
 
 
 def step3(gk, e, A1, A2, p1, pi_1sp, g1alpha, g2alpha, g2rho, pair_alpha):
