@@ -61,7 +61,7 @@ def mk_crs(n, gk, Chi):
     g2beta = Chi.beta * gk.g2
 
     # line 4
-    pair_alpha = gk.e(gk.g1, gk.g2) ** (1 - Chi.alpha ** 2)
+    pair_alpha = gk.gt ** ((1 - Chi.alpha ** 2) % gk.q)
     poly_sum = sum([poly for poly in polys])
     g1_sum = poly_sum * gk.g1
     g2_sum = poly_sum * gk.g2
