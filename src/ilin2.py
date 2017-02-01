@@ -16,37 +16,36 @@ def enc(pk, s1, s2, m):
     g, h = pk
     return (s1*h, s2*(g+h), (m + s1 + s2) * g)
 
-def dec(c, params, sk, table):
-    _, g, o = params
+def dec(c, o, sk, table):
     c1, c2, c3 = c
     e1 = -(sk).mod_inverse(o)    
     e2 = -(sk + 1).mod_inverse(o)
-    v = (c3 + e2*c2 + e1*c1)
+    v = (c3 + e2*c2 + e1*c1).export()
     return table[v]
 
-def make_table(params, n):
-    _, g, _ = params
+def make_table(g, n):
     table = {}
     for i in range(n):
-        table[i * g] = i
+        elem = (i * g).export()
+        table[elem] = i
     return table
 
 def test_encdec():
     params = params_gen()
-    table = make_table(params, 1000)
+    table = make_table(params[1], 1000)
     G, g, o = params
     pk, sk = key_gen(params)
     s1 = o.random()
     s2 = o.random()
     c = enc(pk, s1, s2, 666)
-    assert(dec(c, params, sk, table) == 666)
+    assert(dec(c, o, sk, table) == 666)
     c = enc(pk, s1, s2, 7)
-    assert(dec(c, params, sk, table) == 7)
+    assert(dec(c, o, sk, table) == 7)
     import random
     ps = random.sample(range(1000), 100)
     for i in range(100):
         c = enc(pk, s1, s2, ps[i])
-        assert(dec(c, params, sk, table) == ps[i])
-    
+        assert(dec(c, o, sk, table) == ps[i])
+
 if __name__ == '__main__':
     test_encdec()
