@@ -83,9 +83,9 @@ def generate_pis(chi, n, q):
     It returns a list with the values of the n+1 polynomials P_i(chi).
     Uses Lagrange basis polynomials with distinct points 1, ..., n + 1.
     Arguments:
-    chi -- point of evaluation
-    n -- the number of elements
-    q -- the order of the group
+    chi -- point of evaluation, must be a Bn
+    n -- the number of elements, a Python integer
+    q -- the order of the group, must be a Bn
     """
     
     if chi <= n + 1:
@@ -103,7 +103,7 @@ def generate_pis(chi, n, q):
     # denoms[n] = 1 / (w_{n+1}- w_1) (w_{n+1} - w_2) ... (w_{n+1} - w_n)
     denoms = compute_denominators(n + 1, q)
     
-    missing_factor = Bn(chi - (n + 1))
+    missing_factor = chi - (n + 1)
             
     ln_plus1 = prod.mod_mul(missing_factor.mod_inverse(q), q)
     ln_plus1 = ln_plus1.mod_mul(denoms[n].mod_inverse(q), q)
@@ -113,7 +113,7 @@ def generate_pis(chi, n, q):
                
     two = Bn(2)
     for i in range(1, n + 1):
-        missing_factor = Bn(chi - i)
+        missing_factor = chi - i
         l_i = prod.mod_mul(missing_factor.mod_inverse(q), q)
         l_i = l_i.mod_mul(denoms[i - 1].mod_inverse(q), q)
         pis.append(two.mod_mul(l_i, q).mod_add(ln_plus1, q))
@@ -121,7 +121,7 @@ def generate_pis(chi, n, q):
     return pis
 
 def test_generate_pis():
-    assert(generate_pis(6, 2, 7) == [2, 1, 1])
+    assert(generate_pis(Bn(6), 2, Bn(7)) == [2, 1, 1])
 
 if __name__ == '__main__':
     test_generate_pis()
