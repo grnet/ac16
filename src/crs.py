@@ -71,3 +71,10 @@ def mk_crs(n, gk, Chi):
                 pk2, g2beta, pair_alpha, g1_sum, g2_sum)
     trapdoor = (Chi.chi, Chi.rho)
     return CRS, trapdoor
+
+
+def test():
+    gk = mk_gk()
+    Chi = mk_Chi(gk.q)
+    CRS, td = mk_crs(100, gk, Chi)
+    return gk, Chi, CRS
