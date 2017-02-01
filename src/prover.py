@@ -1,8 +1,12 @@
 from bplib.bp import G1Elem, G2Elem
 from ilin2 import enc
 
+
 def inverse_perm(s):
-    pass
+    r = [None] * len(s)
+    for index, value in enumerate(s):
+        r[value] = index
+    return r
 
 
 def step1a(n, gk, sigma, g1_polys, g1rho, g2_polys, g2rho):
@@ -11,7 +15,7 @@ def step1a(n, gk, sigma, g1_polys, g1rho, g2_polys, g2rho):
     A1 = []
     A2 = []
     for i, ri in enumerate(randoms):
-        inv_i = inverted_sigma(i)
+        inv_i = inverted_sigma[i]
         p1_value = g1_polys[inv_i]
         p2_value = g2_polys[inv_i]
         A1.append(p1_value + ri * g1rho)
@@ -46,7 +50,7 @@ def step2a(sigma, A1, randoms, g1_poly_zero, g1rho, g1_poly_squares):
     pi_1sp = []
     inverted_sigma = inverse_perm(sigma)
     for i, (ri, Ai1) in enumerate(zip(randoms, A1)):
-        inv_i = inverted_sigma(i)
+        inv_i = inverted_sigma[i]
         g1i_poly_sq = g1_poly_squares[inv_i]
         v = (2 * ri) * (Ai1 + g1_poly_zero) - (ri * ri) * g1rho + g1i_poly_sq
         pi_1sp.append(v)
@@ -57,7 +61,7 @@ def step3a(sigma, ciphertexts, s_randoms, pk1, pk2):
     v1s_prime = []
     v2s_prime = []
     for i, s_random in enumerate(s_randoms):
-        perm_i = sigma(i)
+        perm_i = sigma[i]
         (v1, v2) = ciphertexts[perm_i]
         v1s_prime.append(v1 + enc(pk1, s_random[0], s_random[1], 0))
         v2s_prime.append(v2 + enc(pk2, s_random[0], s_random[1], 0))
