@@ -60,7 +60,7 @@ def step3a(sigma, ciphertexts, s_randoms, pk1, pk2):
         (v1, v2) = ciphertexts[perm_i]
         v1s_prime.append(tuple_add(v1, enc(pk1, s_random[0], s_random[1], 0)))
         v2s_prime.append(tuple_add(v2, enc(pk2, s_random[0], s_random[1], 0)))
-    return zip(v1s_prime, v2s_prime)
+    return list(zip(v1s_prime, v2s_prime))
 
 
 def step4a(gk, s_randoms, g2_polys, g2rho):

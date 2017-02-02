@@ -14,7 +14,7 @@ def secure_shuffle(lst):
 
 
 def random_permutation(n):
-    s = range(n)
+    s = list(range(n))
     secure_shuffle(s)
     return s
 
@@ -37,7 +37,7 @@ def demo(n, messages):
     pk2 = CRS.pk2
     ciphertexts = encrypt_messages(gk.q, pk1, pk2, messages)
     sigma = random_permutation(n)
-    print "SIGMA", sigma
+    print("SIGMA", sigma)
     s_randoms = mk_s_randoms(n, gk.q)
     proof = prover.prove(n, CRS, ciphertexts, sigma, s_randoms)
     shuffled_ciphertexts, \
@@ -46,11 +46,11 @@ def demo(n, messages):
     perm_ok, valid, consistent = verifier.verify(
         n, CRS, ciphertexts, shuffled_ciphertexts,
         A1, A2, pi_1sp, pi_c1_1, pi_c1_2, pi_c2_1, pi_c2_2)
-    print "VERIFY", perm_ok, valid, consistent
+    print("VERIFY", perm_ok, valid, consistent)
 
     TABLES = encdec.make_tables(pk1, pk2, n)
     shuffled_ms = decrypt_messages(gk.q, secret, TABLES, shuffled_ciphertexts)
-    print shuffled_ms
+    print(shuffled_ms)
 
 
 def encrypt_messages(order, pk1, pk2, messages):
@@ -62,5 +62,5 @@ def decrypt_messages(order, secret, tables, ciphertexts):
 
 
 if __name__ == '__main__':
-    messages = range(10)
+    messages = list(range(1000))
     demo(len(messages), messages)
