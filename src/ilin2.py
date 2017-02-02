@@ -19,14 +19,6 @@ def gen_params_bp_g2(nid=713):
     o = G.order()
     return (G, g, o)
 
-def gen_params_bp_gt(nid=713):
-    G = BpGroup()
-    g1, g2 = G.gen1(), G.gen2()
-    gt = G.pair(g1, g2)
-    g = gt
-    o = G.order()
-    return (G, g, o)
-
 def key_gen(params):
     _, g, o = params
     x = 1 + (o - 2).random()
