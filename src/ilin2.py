@@ -1,8 +1,29 @@
 from petlib.ec import EcGroup
+from bplib.bp import BpGroup
 
-def params_gen(nid=713):
+def gen_params_ec_group(nid=713):
     G = EcGroup(nid)
     g = G.generator()
+    o = G.order()
+    return (G, g, o)
+
+def gen_params_bp_g1(nid=713):
+    G = BpGroup()
+    g = G.gen1()
+    o = G.order()
+    return (G, g, o)
+
+def gen_params_bp_g2(nid=713):
+    G = BpGroup()
+    g = G.gen2()
+    o = G.order()
+    return (G, g, o)
+
+def gen_params_bp_gt(nid=713):
+    G = BpGroup()
+    g1, g2 = G.gen1(), G.gen2()
+    gt = G.pair(g1, g2)
+    g = gt
     o = G.order()
     return (G, g, o)
 
@@ -20,18 +41,17 @@ def dec(c, o, sk, table):
     c1, c2, c3 = c
     e1 = -(sk).mod_inverse(o)    
     e2 = -(sk + 1).mod_inverse(o)
-    v = (c3 + e2*c2 + e1*c1).export()
+    v = (c3 + e2*c2 + e1*c1)
     return table[v]
 
 def make_table(g, n):
     table = {}
     for i in range(n):
-        elem = (i * g).export()
+        elem = (i * g)
         table[elem] = i
     return table
 
-def test_encdec():
-    params = params_gen()
+def test_encdec(params):
     table = make_table(params[1], 1000)
     G, g, o = params
     pk, sk = key_gen(params)
@@ -48,4 +68,9 @@ def test_encdec():
         assert(dec(c, o, sk, table) == ps[i])
 
 if __name__ == '__main__':
-    test_encdec()
+    print("Testing EC group...")
+    test_encdec(gen_params_ec_group())
+    print("Testing BP group G1...")
+    test_encdec(gen_params_bp_g1())
+    print("Testing BP group G2...")
+    test_encdec(gen_params_bp_g2())
